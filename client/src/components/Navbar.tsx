@@ -2,9 +2,8 @@
 import { useToast } from "@/hooks/use-toast";
 import { useAuth, UserButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import React, { useEffect } from "react";
-// import axios from "axios";
+import axios from "axios";
 
 function Navbar() {
   const { user, isLoaded, isSignedIn } = useUser();
@@ -12,42 +11,31 @@ function Navbar() {
 
   const isAuthenticated = !!userId;
   const { toast } = useToast();
-//   const userRegistration = async (user?: any) => {
-//     const email = user?.emailAddresses[0]?.emailAddress || "";
-//     const username = user?.username;
-//     const clerkId = user?.id;
-  
-//     const firstName=user?.firstName
-//     const lastName = user?.lastName
-//     const phoneNumber = user?.phoneNumbers[0]?.phoneNumber || ""
-//     const imageUrl = user?.imageUrl
- 
+  const userRegistration = async (user?: any) => {
+    const email = user?.emailAddresses[0]?.emailAddress || "";
+    const username = user?.username;
+    const clerkId = user?.id;
 
-//     const response = await axios.post("http://localhost:8000/register-user", {
-//       email,
-//       username,
-//       clerkId,
-//       firstName,
-//       lastName,
-//       phoneNumber,
-//       imageUrl
-//     });
-//     if (response.status == 200) {
-//       toast({
-//         description: "Welcome to Avatarify",
-//       });
-//     }
-//     if (response.status == 201) {
-//       toast({
-//         description: `Welcome back ${username}`,
-//       });
-//     }
-//   };
+    const response = await axios.post("http://localhost:8000/user-register", {
+      email,
+      username,
+      clerkId,
+    });
+    if (response.status == 200) {
+      toast({
+        description: "Welcome to Avatarify",
+      });
+    }
+    if (response.status == 201) {
+      toast({
+        description: `Welcome back ${username}`,
+      });
+    }
+  };
   useEffect(() => {
- 
     if (isAuthenticated) {
       try {
-        // userRegistration(user);
+        userRegistration(user);
       } catch (error) {
         console.log(error);
       }
@@ -60,7 +48,7 @@ function Navbar() {
           href={"/"}
           className="text-xl font-ala cursor-pointer md:text-2xl lg:text-5xl text-red-600 font-semibold"
         >
-         Film Flicker
+          Film Flicker
         </Link>
       </div>
 
@@ -68,7 +56,6 @@ function Navbar() {
         {isLoaded ? (
           isSignedIn ? (
             <>
-              
               <div className="flex items-center gap-3">
                 <UserButton />
                 {user?.username}
